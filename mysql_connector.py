@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 
+__author__ = 'Yujie Zhu'
 
 class Database:
 
