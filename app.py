@@ -1,10 +1,8 @@
 import re
 from flask import Flask, redirect, request
 from flask_restful import Resource, Api
-if __name__ == '__main__':
-    from mysql_connector import Database
-else:
-    from .mysql_connector import Database
+from mysql_connector import Database
+
 
 __author__ = 'Yujie Zhu'
 
@@ -45,7 +43,7 @@ class GetEvent(Resource):
     def get(eid):
         event_sql = f"SELECT * FROM Event WHERE EID = {eid};"
         event_res = Database(event_sql).execute()
-        print(event_res)
+        # print(event_res)
         if not event_res:
             return "Requested event does not exist.", 404
 
@@ -146,4 +144,4 @@ api.add_resource(NewEvent, '/api/new_event')
 api.add_resource(AddUser, '/api/add_user')
 
 if __name__ == '__main__':
-    app.run(port=8080)
+    app.run(debug=False)
