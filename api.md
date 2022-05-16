@@ -5,7 +5,7 @@ Get all events:
     Method:
         GET
     URL:
-        '/api/list_all'
+        'http://184.169.246.42:8088/api/list_all'
     Body:
         None
     Example:
@@ -15,7 +15,7 @@ Get specific event:
     Method:
         GET
     URL:
-        '/api/get_event/<int:eid>'
+        'http://184.169.246.42:8088/api/get_event/<int:eid>'
     Body:
         None
     Example:
@@ -25,7 +25,7 @@ Create a new event:
     Method:
         POST
     URL:
-        '/api/new_event'
+        'http://184.169.246.42:8088/api/new_event'
     Body:
         {"event_name": "<EVENTNAME>", "date": "<MM/DD/YYYY>", "place": "<PLACENAME>", 
         "sport": "<SPORTNAME>", "user_name": "<USERNAME>"}
@@ -39,7 +39,7 @@ Add a user to existing event:
     Method:
         POST
     URL:
-        '/api/add_user'
+        'http://184.169.246.42:8088/api/add_user'
     Body:
         {"user_name": "<USERNAME>", "eid": <EID>}
     Example:
