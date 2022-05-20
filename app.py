@@ -1,14 +1,29 @@
 import re
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, g
 from flask_restful import Resource, Api
-from mysql_connector import Database
+from mysql.connector import Error, pooling
 from flask_cors import CORS
+from extension import conn
 
 __author__ = 'Yujie Zhu'
 
 app = Flask(__name__)
 api = Api(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+
+# @app.before_first_request
+# def before_first_request():
+# with app.app_context():
+#     g.cnx_pool = pooling.MySQLConnectionPool(pool_name="my_mysql_pool",
+#                                            pool_size=5,
+#                                            pool_reset_session=True,
+#                                            host='3.239.70.186',
+#                                            database='COEN241Database',
+#                                            user='remoteuser',
+#                                            password='12345678',
+#                                            port=3306,
+#                                            autocommit=True)
 
 
 @app.route('/')
@@ -21,7 +36,7 @@ class ListAll(Resource):
     def get():
         events = []
         sql = "SELECT * FROM Event;"
-        res = Database(sql).execute()
+        res = conn.execute(sql)
         for r in res:
             eid = r[0]
             name = r[1]
@@ -43,13 +58,13 @@ class GetEvent(Resource):
     @staticmethod
     def get(eid):
         event_sql = f"SELECT * FROM Event WHERE EID = {eid};"
-        event_res = Database(event_sql).execute()
+        event_res = conn.execute(event_sql)
         # print(event_res)
         if not event_res:
             return "Requested event does not exist.", 404
 
         user_sql = f"SELECT user_name FROM EventHasUser WHERE EID={eid}"
-        user_res = Database(user_sql).execute()
+        user_res = conn.execute(user_sql)
         user_list = []
         for u in user_res:
             user_list.append(u[0])
@@ -78,25 +93,25 @@ class NewEvent(Resource):
         new_event_sql = f"INSERT INTO Event(event_name, event_date, event_place, event_sport) " \
                         f"VALUES ('{event_name}', '{date}', '{place}', '{sport}');"
         try:
-            Database(new_event_sql).execute()
+            conn.execute(new_event_sql)
         except Exception as e:
             return str(e), 400
 
         get_eid_sql = f"SELECT EID FROM Event WHERE event_name = '{event_name}' AND event_date = '{date}' " \
                       f"AND event_place = '{place}' AND event_sport = '{sport}';"
         try:
-            eid = Database(get_eid_sql).execute()[-1][0]
+            eid = conn.execute(get_eid_sql)[-1][0]
         except Exception as e:
             return str(e), 400
 
         add_user_sql = f"INSERT INTO EventHasUser(EID, user_name) " \
                        f"VALUES({eid},'{user_name}');"
         try:
-            Database(add_user_sql).execute()
+            conn.execute(add_user_sql)
         except Exception as e:
             return str(e), 400
 
-        return redirect(f'/api/get_event/{eid}')
+        return f"event {event_name} is added, eid is {eid}"
 
 
 class AddUser(Resource):
@@ -113,7 +128,7 @@ class AddUser(Resource):
               f"VALUES('{user_name}', {eid});"
 
         try:
-            Database(sql).execute()
+            conn.execute(sql)
         except Exception as e:
             return str(e), 400
 
@@ -133,7 +148,7 @@ class DeleteUser(Resource):
         sql = f"DELETE FROM EventHasUser WHERE EID = {eid} AND user_name = '{user_name}';"
 
         try:
-            Database(sql).execute()
+            conn.execute(sql)
         except Exception as e:
             return str(e), 400
 
@@ -152,14 +167,14 @@ class DeleteEvent(Resource):
         sql = f"DELETE FROM EventHasUser WHERE EID = {eid};"
 
         try:
-            Database(sql).execute()
+            conn.execute(sql)
         except Exception as e:
             return str(e), 400
 
         sql = f"DELETE FROM Event WHERE EID = {eid};"
 
         try:
-            Database(sql).execute()
+            conn.execute(sql)
         except Exception as e:
             return str(e), 400
 
