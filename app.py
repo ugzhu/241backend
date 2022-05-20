@@ -28,13 +28,13 @@ class ListAll(Resource):
             date = r[2]
             place = r[3]
             sport = r[4]
-            user_list = []
-            sql = f"SELECT user_name FROM EventHasUser WHERE EID={eid}"
-            user = Database(sql).execute()
-            for u in user:
-                user_list.append(u[0])
+            # user_list = []
+            # sql = f"SELECT user_name FROM EventHasUser WHERE EID={eid}"
+            # user = Database(sql).execute()
+            # for u in user:
+            #     user_list.append(u[0])
             event = {'eid': eid, 'event_name': name, 'date': date,
-                     'place': place, 'sport': sport, 'user_list': user_list}
+                     'place': place, 'sport': sport}
             events.append(event)
         return events
 
