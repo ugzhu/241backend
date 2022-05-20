@@ -46,3 +46,29 @@ Add a user to existing event:
         POST /api/add_user
         Body:
             {"user_name": "ben", "eid": 28}
+
+
+Delete a user from existing event:
+    Method:
+        DELETE
+    URL:
+        'http://184.169.246.42:8088/api/delete_user'
+    Body:
+        {"user_name": "<USERNAME>", "eid": <EID>}
+    Example:
+        DELETE /api/delete_user
+        Body:
+            {"user_name": "ben", "eid": 28} 
+
+
+Delete an event:
+    Method:
+        DELETE
+    URL:
+        'http://184.169.246.42:8088/api/delete_event'
+    Body:
+        {"eid": <EID>}
+    Example:
+        DELETE /api/delete_event
+        Body:
+            {"eid": 28} 
