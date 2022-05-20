@@ -120,6 +120,54 @@ class AddUser(Resource):
         return f"User {user_name} added to Event {eid}", 200
 
 
+class DeleteUser(Resource):
+    @staticmethod
+    def delete():
+        json_req = request.get_json(force=True)
+        try:
+            eid = int(json_req['eid'])
+            user_name = str(json_req['user_name'])
+        except KeyError:
+            return "Required keys do not exist in request.", 400
+
+        sql = f"DELETE FROM EventHasUser WHERE EID = {eid} AND user_name = '{user_name}';"
+
+        try:
+            Database(sql).execute()
+        except Exception as e:
+            return str(e), 400
+
+        return f"User {user_name} deleted from event {eid}"
+
+
+class DeleteEvent(Resource):
+    @staticmethod
+    def delete():
+        json_req = request.get_json(force=True)
+        try:
+            eid = int(json_req['eid'])
+        except KeyError:
+            return "Required keys do not exist in request.", 400
+
+        sql = f"DELETE FROM EventHasUser WHERE EID = {eid};"
+
+        try:
+            Database(sql).execute()
+        except Exception as e:
+            return str(e), 400
+
+        sql = f"DELETE FROM Event WHERE EID = {eid};"
+
+        try:
+            Database(sql).execute()
+        except Exception as e:
+            return str(e), 400
+
+        return f"Event {eid} deleted."
+
+
+
+
 # class SendSql(Resource):
 #     @staticmethod
 #     def post():
@@ -143,6 +191,8 @@ api.add_resource(ListAll, '/api/list_all')
 api.add_resource(GetEvent, '/api/get_event/<int:eid>')
 api.add_resource(NewEvent, '/api/new_event')
 api.add_resource(AddUser, '/api/add_user')
+api.add_resource(DeleteUser, '/api/delete_user')
+api.add_resource(DeleteEvent, '/api/delete_event')
 
 if __name__ == '__main__':
     app.run(debug=False)

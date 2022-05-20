@@ -3,6 +3,7 @@ from mysql.connector import Error
 
 __author__ = 'Yujie Zhu'
 
+
 class Database:
 
     def __init__(self, sql):
