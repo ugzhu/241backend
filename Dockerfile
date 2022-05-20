@@ -5,7 +5,7 @@ COPY app.py .
 COPY mysql_connector.py .
 COPY requirements.txt .
 COPY extension.py .
-COPY mysql_pooled_connector .
+COPY mysql_pooled_connector.py .
 RUN pip3 install -r requirements.txt
 COPY gunicorn_starter.sh .
 ENTRYPOINT ["./gunicorn_starter.sh"]
