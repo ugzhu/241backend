@@ -2,12 +2,13 @@ import re
 from flask import Flask, redirect, request
 from flask_restful import Resource, Api
 from mysql_connector import Database
-
+from flask_cors import CORS
 
 __author__ = 'Yujie Zhu'
 
 app = Flask(__name__)
 api = Api(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 @app.route('/')
