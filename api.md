@@ -1,4 +1,4 @@
-COEN 241 group project API documentation
+SCU pickup games API documentation
 __author__ = 'Yujie Zhu'
 
 Get all events:
